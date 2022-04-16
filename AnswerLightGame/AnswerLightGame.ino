@@ -72,7 +72,7 @@ void loop() {
     if(digitalRead(RIGHT_ANSWER_BUTTON_PIN) == 0) {
       right_score++; // 分數加+1
       sound(50);
-      if(left_score == 1) { // 亮第一燈
+      if(right_score == 1) { // 亮第一燈
         digitalWrite(RIGHT_LED_PIN_1, HIGH);
       } else { // 亮第二燈
         digitalWrite(RIGHT_LED_PIN_2, HIGH);    
@@ -83,12 +83,12 @@ void loop() {
   if(left_score == count) { // 驗證玩家分數是否 == 達標分數
       Serial.println("LEFT WIN !");
       gameOver = true;
-      gameoverSound(100, 3);
+      //gameoverSound(100, 3);
   }
   if(right_score == count) {
       Serial.println("RIGHT WIN !");
       gameOver = true;
-      gameoverSound(100, 4);
+      //gameoverSound(100, 4);
   }
   delay(1000);
 }
