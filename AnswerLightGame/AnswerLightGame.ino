@@ -103,7 +103,7 @@ void sound(int delaytime) {
 
 void gameoverSound(int delaytime, int times) {
   for(int i=0;i<times;i++) {
-    sound(50);
     delay(delaytime);
+    sound(50);
   }
 }
