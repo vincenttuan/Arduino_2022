@@ -19,6 +19,9 @@ int left_score = 0;
 int right_score = 0;
 // 遊戲結束
 boolean gameOver = false;
+// 音符陣列
+int freq[] = {0, 262, 294, 330, 349, 392, 440, 494};
+int bee[] = {5, 3, 3, 4, 2, 2, 1, 2, 3, 4, 5, 5, 5};
 void setup() {
   Serial.begin(9600);
   // 初始設定
@@ -37,6 +40,11 @@ void setup() {
   digitalWrite(RIGHT_LED_PIN_2, LOW);
   // 遊戲開始
   gameOver = false;
+  // 遊戲開始音樂
+  for(int i=0;i<=13;i++) {
+    tone(BUZEER_PIN, freq[bee[i]], 500);
+    delay(200);
+  }
 }
 
 void loop() {
