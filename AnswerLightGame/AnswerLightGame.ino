@@ -8,6 +8,9 @@ const int ANSWER_LED_PIN = 5;
 const int RIGHT_LED_PIN_1 = 3;
 const int RIGHT_LED_PIN_2 = 4;
 const int RIGHT_ANSWER_BUTTON_PIN = 6;
+// 蜂鳴器(Buzeer)
+const int BUZEER_PIN = 10;
+
 // 達標分數
 int count = 2;
 // 左邊玩家分數
@@ -18,7 +21,7 @@ int right_score = 0;
 boolean gameOver = false;
 void setup() {
   Serial.begin(9600);
-  // 初始資料
+  // 初始設定
   pinMode(LEFT_LED_PIN_1, OUTPUT);
   pinMode(LEFT_LED_PIN_2, OUTPUT);
   pinMode(LEFT_ANSWER_BUTTON_PIN, INPUT);
@@ -26,6 +29,7 @@ void setup() {
   pinMode(RIGHT_LED_PIN_1, OUTPUT);
   pinMode(RIGHT_LED_PIN_2, OUTPUT);
   pinMode(RIGHT_ANSWER_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUZEER_PIN, OUTPUT);
   // 所有玩家的燈先關閉
   digitalWrite(LEFT_LED_PIN_1, LOW);
   digitalWrite(LEFT_LED_PIN_2, LOW);
@@ -48,11 +52,15 @@ void loop() {
   delay(random(3000, 10000));
   // 搶答燈亮
   digitalWrite(ANSWER_LED_PIN, HIGH);
+  // 蜂鳴器發出聲音
+  sound(50);
+  
   // 等待玩家按下按鈕
   while(true) {
     // 左邊玩家按下
     if(digitalRead(LEFT_ANSWER_BUTTON_PIN) == 0) {
       left_score++; // 分數加+1
+      sound(50);
       if(left_score == 1) { // 亮第一燈
         digitalWrite(LEFT_LED_PIN_1, HIGH);
       } else { // 亮第二燈
@@ -63,6 +71,7 @@ void loop() {
     // 右邊玩家按下
     if(digitalRead(RIGHT_ANSWER_BUTTON_PIN) == 0) {
       right_score++; // 分數加+1
+      sound(50);
       if(left_score == 1) { // 亮第一燈
         digitalWrite(RIGHT_LED_PIN_1, HIGH);
       } else { // 亮第二燈
@@ -74,10 +83,27 @@ void loop() {
   if(left_score == count) { // 驗證玩家分數是否 == 達標分數
       Serial.println("LEFT WIN !");
       gameOver = true;
+      gameoverSound(100, 3);
   }
   if(right_score == count) {
       Serial.println("RIGHT WIN !");
       gameOver = true;
+      gameoverSound(100, 4);
   }
   delay(1000);
+}
+
+void sound(int delaytime) {
+  // 蜂鳴器開
+  digitalWrite(BUZEER_PIN, HIGH);
+  delay(delaytime); // 發音時間
+  // 蜂鳴器關
+  digitalWrite(BUZEER_PIN, LOW);
+}
+
+void gameoverSound(int delaytime, int times) {
+  for(int i=0;i<times;i++) {
+    sound(50);
+    delay(delaytime);
+  }
 }
