@@ -5,8 +5,8 @@ const int LEFT_ANSWER_BUTTON_PIN = 7;
 // 搶答燈
 const int ANSWER_LED_PIN = 5;
 // 右邊玩家
-const int RIGHT_LED_PIN_1 = 3;
-const int RIGHT_LED_PIN_2 = 4;
+const int RIGHT_LED_PIN_1 = 4;
+const int RIGHT_LED_PIN_2 = 3;
 const int RIGHT_ANSWER_BUTTON_PIN = 6;
 // 蜂鳴器(Buzeer)
 const int BUZEER_PIN = 10;
