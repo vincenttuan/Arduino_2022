@@ -1,7 +1,6 @@
 #include <IRremote.h>
 #define IR_RECV_PIN 10
-#define LED_PIN 11
-#define BUZEER_PIN 12
+#define LED_BUZEER_PIN 9 // 使用 7 段顯示器 DP 的 PIN
 
 // IR 設備宣告
 IRrecv irrecv(IR_RECV_PIN);
@@ -39,8 +38,7 @@ void setup() {
   pinMode(7, OUTPUT);
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(BUZEER_PIN, OUTPUT);
+  pinMode(LED_BUZEER_PIN, OUTPUT);
 }
 
 void loop() {
@@ -95,12 +93,8 @@ void sevenSegWrite(byte digit) {
     ++pin;
   }
   
-  digitalWrite(BUZEER_PIN, HIGH);
+  digitalWrite(LED_BUZEER_PIN, HIGH);
   delay(100);
-  digitalWrite(BUZEER_PIN, LOW);
-  
-  digitalWrite(LED_PIN, HIGH);
-  delay(100);
-  digitalWrite(LED_PIN, LOW);
+  digitalWrite(LED_BUZEER_PIN, LOW);
   delay(100);
 }
