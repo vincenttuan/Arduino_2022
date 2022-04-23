@@ -27,12 +27,12 @@ void setup() {
 void loop() {
   // 將IR所收到的內容進行解碼 (&變數記憶體位置)
   if(irrecv.decode(&results)) {
-    //Serial.println(results.value, HEX); // HEX: 16進位, DEC: 10進位
+    Serial.println(results.value, HEX); // HEX: 16進位, DEC: 10進位
     switch(results.value) {
-      case 0xFFA857:
+      case 0xFFA857: // 按下 +
         digitalWrite(RELAY_PIN, HIGH);
         break;
-      case 0xFFE01F:
+      case 0xFFE01F: // 按下 -
         digitalWrite(RELAY_PIN, LOW);
         break;  
     }
