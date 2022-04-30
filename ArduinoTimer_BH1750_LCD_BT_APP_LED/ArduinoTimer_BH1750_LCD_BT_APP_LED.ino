@@ -19,10 +19,10 @@ Timer t;
 void setup() {
   Serial.begin(9600);
   delay(2);
-  
+
   Wire.begin();
   lightMeter.begin();
-  
+
   lcd.begin();
   lcd.backlight();
   lcd.clear();
@@ -30,17 +30,20 @@ void setup() {
   lcd.print("lux:");
 
   pinMode(LED_PIN, OUTPUT);
-  
+
   BT.begin(9600);
-  
+
+  // 註冊工作內容
   t.every(500, bt1750);
   t.every(1000, lcd_print);
-  t.every(10, bt_app_led);
+  t.every(10, bt_app);
+  t.every(5, led_control);
 
   Serial.println("Ready ...");
 }
 
 void loop() {
+  // 執行所註冊的工作內容
   t.update();
   delay(10);
 }
@@ -59,21 +62,25 @@ void lcd_print() {
   lcd.print(lux);
 }
 
-void bt_app_led() {
+void bt_app() {
   // 從主控台傳指令給 BT
-  if(Serial.available()) {
+  if (Serial.available()) {
     val = Serial.read(); // 接到指令
     BT.print(val); // 將指令給 BT
   }
 
   // BT 回應資料給主控台
-  if(BT.available()) {
+  if (BT.available()) {
     val = BT.read(); // 讀取 BT 的回應資料
     Serial.print(val); // 將回應資料給主控台
-    if(val == '1') {
-      digitalWrite(LED_PIN, HIGH);  
-    } else if(val == '0') {
-      digitalWrite(LED_PIN, LOW);  
-    }
+
+  }
+}
+
+void led_control() {
+  if (val == '1') {
+    digitalWrite(LED_PIN, HIGH);
+  } else if (val == '0') {
+    digitalWrite(LED_PIN, LOW);
   }
 }
