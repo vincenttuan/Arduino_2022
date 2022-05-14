@@ -14,7 +14,9 @@
  */
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal_PCF8574.h>
+#include <Servo.h>
 #define LED_PIN 12
+#define SERVO_PIN 13
 
 LiquidCrystal_PCF8574 lcd(0x27);  // 設定LCD的i2c位址，一般情況就是0x27和0x3F兩種
 
@@ -43,12 +45,20 @@ int noteDurationsFail[] = {
   12, 2
 };
 
+// 建立 Servo 物件
+Servo myServo;
+int initDegree = 90; // 初始角度
+int maxDegree = 0; // 最大角度
+
 void setup()  
 {
   Serial.begin(9600);
-  pinMode(LED_PIN, OUTPUT);
-  
   delay(100);
+  
+  pinMode(LED_PIN, OUTPUT);
+  myServo.attach(SERVO_PIN); // 設定 Servo 訊號腳位
+  myServo.write(initDegree); // 設定初始角度位置
+  
   Serial.println("Fingerprint detect test");
 
   // 設定AS608的Baud Rate
@@ -91,6 +101,7 @@ void loop()
     switch(data) {
       case '1':
         digitalWrite(LED_PIN, HIGH);
+        openTheDoor();
         break;
       case '0':
         digitalWrite(LED_PIN, LOW);
@@ -181,5 +192,19 @@ void playMusicFail(){
     int pauseBetweenNotes = noteDuration * 1.30;
     delay(pauseBetweenNotes);
     noTone(4);
+  }
+}
+
+void openTheDoor() {
+  // 啟動 open 柵欄中 ...
+  for(int i=initDegree;i>=maxDegree;i-=5) {
+    myServo.write(i);
+    delay(100);
+  }
+  delay(5000); // 柵欄全部開啟
+  // 關閉 close 柵欄中 ...
+  for(int i=maxDegree;i<=initDegree;i+=5) {
+    myServo.write(i);
+    delay(100);
   }
 }
