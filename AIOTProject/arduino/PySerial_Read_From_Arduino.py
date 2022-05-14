@@ -1,3 +1,6 @@
+import time
+import LineNotify
+
 import serial  # 引用 pySerial 模組
 
 if __name__ == '__main__':
@@ -24,9 +27,17 @@ if __name__ == '__main__':
                     print(uid, type(uid))
                     if uid > 100:
                         print('開門')
+                        # 傳送 1 給 arduino 進行開燈(門), # 表示約定結尾符號
+                        send_data = str(1)
+                        LineNotify.sendMessageAndImageFile('開門', 'door_open.png')
                     else:
                         print('驗證失敗')
+                        send_data = str(0)
 
+                    send_data = send_data.encode()
+                    ser.write(send_data)
+                    print("傳送", send_data, "給 Arduino")
+                    # time.sleep(0.5)  # 休息 0.5 秒
 
     except serial.SerialException:
         print('通訊埠', COM_PORT, '無法建立')
