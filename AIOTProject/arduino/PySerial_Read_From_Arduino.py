@@ -13,6 +13,20 @@ if __name__ == '__main__':
                 data = data_row.decode()  # 將原始資料轉碼, 預設編碼是 UTF-8
                 data = data.strip("\r").strip("\n")  # 去除換行符號
                 print(data)
+                # 過濾出驗證成功數值並顯示
+                # 例如:
+                # 收到: Found ID #3 with confidence of 120
+                # 顯示: 120
+                if "Found ID" in data:
+                    uid = data.split(" ")[-1]
+                    # print(id, type(id))
+                    uid = int(uid)  # 字串轉型int
+                    print(uid, type(uid))
+                    if uid > 100:
+                        print('開門')
+                    else:
+                        print('驗證失敗')
+
 
     except serial.SerialException:
         print('通訊埠', COM_PORT, '無法建立')
