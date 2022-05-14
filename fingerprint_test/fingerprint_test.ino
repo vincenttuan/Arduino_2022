@@ -14,6 +14,7 @@
  */
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal_PCF8574.h>
+#define LED_PIN 12
 
 LiquidCrystal_PCF8574 lcd(0x27);  // 設定LCD的i2c位址，一般情況就是0x27和0x3F兩種
 
@@ -41,9 +42,11 @@ int melodyFail[] = {
 int noteDurationsFail[] = {
   12, 2
 };
+
 void setup()  
 {
   Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
   
   delay(100);
   Serial.println("Fingerprint detect test");
@@ -81,6 +84,20 @@ void setup()
 
 void loop()                     
 {
+  // 接收來自主機端的訊息
+  while(Serial.available()>0) {
+    char data = Serial.read();
+    Serial.println(data);
+    switch(data) {
+      case '1':
+        digitalWrite(LED_PIN, HIGH);
+        break;
+      case '0':
+        digitalWrite(LED_PIN, LOW);
+        break;
+    }
+    
+  }
   //進行比對指紋
   getFingerprintIDez();
   delay(50);            
