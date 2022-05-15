@@ -1,5 +1,5 @@
 import requests
-token = "3YcHWOULRLfBcHME4Abkvz4P3q8YUAGHmK5YehGcu2k"
+token = ""
 line_url = 'https://notify-api.line.me/api/notify'
 
 def sendMessage(msg):
