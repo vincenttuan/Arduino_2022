@@ -35,7 +35,7 @@ void loop() {
   Serial.println(buf);
 
   // 判斷 sw
-  if (sw == 0) {
+  if (sw < 10) {
     k = 8;
   } else {
     if (vrx > 1000) {
@@ -58,7 +58,7 @@ void loop() {
   // 迴圈要反過來寫
   for (int i = 7; i >= 0; i--) {
     digitalWrite(SH, LOW);      // 拉回活塞
-    digitalWrite(DS, data[i][8]);  // 放入資料
+    digitalWrite(DS, data[k][i]);  // 放入資料
     digitalWrite(SH, HIGH);     // 活塞推入
   }
 
