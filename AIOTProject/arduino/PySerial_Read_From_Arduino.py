@@ -4,7 +4,7 @@ import LineNotify
 import serial  # 引用 pySerial 模組
 
 if __name__ == '__main__':
-    COM_PORT = 'COM7'  # 指定通訊埠
+    COM_PORT = 'COM7'  # 指定通訊埠 , mac: '/dev/cu.usbmodem141301'
     BAUD_RATE = 9600  # 設定傳輸速率(鮑率)
     ser = None
     try:
