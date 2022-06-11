@@ -45,33 +45,34 @@ def update_led():
     db.reference("/led").set(0 if value == 1 else 1)
 
 
-root = tkinter.Tk()
-root.geometry("1000x500")
-root.title("Firebase console")
+if __name__ == '__main__':
+    root = tkinter.Tk()
+    root.geometry("1000x500")
+    root.title("Firebase console")
 
-myfont36 = font.Font(family='Helvetica', size=36, weight='bold')
-myfont24 = font.Font(family='Helvetica', size=24)
+    myfont36 = font.Font(family='Helvetica', size=36, weight='bold')
+    myfont24 = font.Font(family='Helvetica', size=24)
 
-led_on_img = ImageTk.PhotoImage(Image.open('led_on.png'))
-led_off_img = ImageTk.PhotoImage(Image.open('led_off.png'))
+    led_on_img = ImageTk.PhotoImage(Image.open('led_on.png'))
+    led_off_img = ImageTk.PhotoImage(Image.open('led_off.png'))
 
-tempValue = tkinter.StringVar()
-tempValue.set("00.0 C")
+    tempValue = tkinter.StringVar()
+    tempValue.set("00.0 C")
 
-humiValue = tkinter.StringVar()
-humiValue.set("00.0 %")
+    humiValue = tkinter.StringVar()
+    humiValue.set("00.0 %")
 
-tempLabel = tkinter.Label(root, textvariable=tempValue, font=myfont36)
-humiLabel = tkinter.Label(root, textvariable=humiValue, font=myfont36)
-ledButton = tkinter.Button(root, image=led_off_img, font=myfont36, command=lambda: update_led())
+    tempLabel = tkinter.Label(root, textvariable=tempValue, font=myfont36)
+    humiLabel = tkinter.Label(root, textvariable=humiValue, font=myfont36)
+    ledButton = tkinter.Button(root, image=led_off_img, font=myfont36, command=lambda: update_led())
 
-root.rowconfigure(0, weight=1)
-root.columnconfigure((0, 1, 2), weight=1)
-tempLabel.grid(row=0, column=0, sticky='EWNS')
-humiLabel.grid(row=0, column=1, sticky='EWNS')
-ledButton.grid(row=0, column=2, sticky='EWNS')
+    root.rowconfigure(0, weight=1)
+    root.columnconfigure((0, 1, 2), weight=1)
+    tempLabel.grid(row=0, column=0, sticky='EWNS')
+    humiLabel.grid(row=0, column=1, sticky='EWNS')
+    ledButton.grid(row=0, column=2, sticky='EWNS')
 
-t1 = threading.Thread(target=listenerFirebase)
-t1.start()
+    t1 = threading.Thread(target=listenerFirebase)
+    t1.start()
 
-root.mainloop()
+    root.mainloop()
