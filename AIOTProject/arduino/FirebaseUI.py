@@ -24,9 +24,21 @@ def listener_humi(event):
     print("humi:", event.data)
     humiValue.set(event.data)
 
+def listener_led(event):
+    print("led:", event.data)
+    # 換圖片
+    if event.data == 1:
+        ledLabel.config(image=led_on_img)
+        ledLabel.image = led_on_img
+    elif event.data == 0:
+        ledLabel.config(image=led_off_img)
+        ledLabel.image = led_off_img
+
+
 def listenerFirebase():
     firebase_admin.db.reference("/temp").listen(listener_temp)
     firebase_admin.db.reference("/humi").listen(listener_humi)
+    firebase_admin.db.reference("/led").listen(listener_led)
 
 root = tkinter.Tk()
 root.geometry("1000x500")
@@ -54,7 +66,7 @@ tempLabel.grid(row=0, column=0, sticky='EWNS')
 humiLabel.grid(row=0, column=1, sticky='EWNS')
 ledLabel.grid(row=0, column=2, sticky='EWNS')
 
-t1 =threading.Thread(target=listenerFirebase)
+t1 = threading.Thread(target=listenerFirebase)
 t1.start()
 
 root.mainloop()
