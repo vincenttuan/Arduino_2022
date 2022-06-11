@@ -1,11 +1,17 @@
+#include "DHT.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <Timer.h>
 #define LED_PIN 2  // D1mini D4 腳位
+#define DHT_PIN 4  // D1mini D2 腳位
+#define DHTTYPE DHT11
 
 WiFiServer server(80); // 建立 WebServer 與 port
 Timer t;
+
+// 初始化 DHT sensor.
+DHT dht(DHT_PIN, DHTTYPE);
 
 String led_off_url = "http://www.clker.com/cliparts/6/l/f/V/f/H/green-led-off-md.png";
 String led_on_url = "http://www.clker.com/cliparts/1/n/o/R/x/K/greenled-md.png";
@@ -74,14 +80,44 @@ void run_web() {
   client.println("</html>");
 }
 
+void run_dht11() {
+  float h = dht.readHumidity();
+  // 攝式溫度
+  float t = dht.readTemperature();
+  // 華式溫度
+  float f = dht.readTemperature(true);
+  // 若讀取失敗則重讀
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
+  }
+  // 華式體感溫度
+  float hif = dht.computeHeatIndex(f, h);
+  // 攝式體感溫度
+  float hic = dht.computeHeatIndex(t, h, false);
+  // 印出資料
+  Serial.print(F("Humidity: "));
+  Serial.print(h);
+  Serial.print(F("%  Temperature: "));
+  Serial.print(t);
+  Serial.print(F("°C "));
+  Serial.print(f);
+  Serial.print(F("°F  Heat index: "));
+  Serial.print(hic);
+  Serial.print(F("°C "));
+  Serial.print(hif);
+  Serial.println(F("°F"));
+}
+
 void setup() {
   Serial.begin(9600);
   delay(1);
   pinMode(LED_PIN, OUTPUT);
-  
+  dht.begin();
   connectWifi();
   startWebServer();
   t.every(100, run_web);
+  t.every(2000, run_dht11);
 }
 
 void loop() {
