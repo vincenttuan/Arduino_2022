@@ -16,6 +16,18 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://d1mini-vincent-default-rtdb.firebaseio.com/'
 })
 
+def listener_temp(event):
+    print("temp:", event.data)
+    tempValue.set(event.data)
+
+def listener_humi(event):
+    print("humi:", event.data)
+    humiValue.set(event.data)
+
+def listenerFirebase():
+    firebase_admin.db.reference("/temp").listen(listener_temp)
+    firebase_admin.db.reference("/humi").listen(listener_humi)
+
 root = tkinter.Tk()
 root.geometry("1000x500")
 root.title("Firebase console")
@@ -41,5 +53,8 @@ root.columnconfigure((0, 1, 2), weight=1)
 tempLabel.grid(row=0, column=0, sticky='EWNS')
 humiLabel.grid(row=0, column=1, sticky='EWNS')
 ledLabel.grid(row=0, column=2, sticky='EWNS')
+
+t1 =threading.Thread(target=listenerFirebase)
+t1.start()
 
 root.mainloop()
