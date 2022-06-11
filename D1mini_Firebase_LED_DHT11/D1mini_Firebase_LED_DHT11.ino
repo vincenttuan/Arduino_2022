@@ -42,14 +42,69 @@ void connectWifi() {
   
 }
 
+void checkLed() {
+  int value = firebase.getInt("led");
+  digitalWrite(LED_PIN, value);
+}
+
+void uploadDHT11() {
+  float h = dht.readHumidity();
+  // 攝式溫度
+  float t = dht.readTemperature();
+  // 華式溫度
+  float f = dht.readTemperature(true);
+  // 若讀取失敗則重讀
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println(F("Failed to read from DHT sensor!"));
+    return;
+  }
+  // 華式體感溫度
+  float hif = dht.computeHeatIndex(f, h);
+  // 攝式體感溫度
+  float hic = dht.computeHeatIndex(t, h, false);
+  // 印出資料
+  Serial.print(F("Humidity: "));
+  Serial.print(h);
+  Serial.print(F("%  Temperature: "));
+  Serial.print(t);
+  Serial.print(F("°C "));
+  Serial.print(f);
+  Serial.print(F("°F  Heat index: "));
+  Serial.print(hic);
+  Serial.print(F("°C "));
+  Serial.print(hif);
+  Serial.println(F("°F"));
+  // 上傳到 Firebase
+  firebase.setFloat("humi", h);
+  firebase.setFloat("temp", t);
+  firebase.setFloat("temp_hic", hic);
+  
+}
+
 void setup() {
   Serial.begin(9600);
   delay(1);
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
   connectWifi();
-  
+  t.every(1000, checkLed);
+  t.every(2000, uploadDHT11);
 }
 
 void loop() {
-  
+  t.update();
+}
+
+void test() {
+
+  firebase.setInt("led", 1);
+  delay(1000);
+  firebase.setInt("led", 0);
+  delay(1000);
+  firebase.pushInt("logs", random());
+  delay(1000);
+  float humi = firebase.getFloat("humi");
+  Serial.print("humi = ");
+  Serial.println(humi);
+  delay(1000);
 }
