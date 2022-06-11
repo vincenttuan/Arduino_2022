@@ -28,17 +28,22 @@ def listener_led(event):
     print("led:", event.data)
     # 換圖片
     if event.data == 1:
-        ledLabel.config(image=led_on_img)
-        ledLabel.image = led_on_img
+        ledButton.config(image=led_on_img)
+        ledButton.image = led_on_img
     elif event.data == 0:
-        ledLabel.config(image=led_off_img)
-        ledLabel.image = led_off_img
+        ledButton.config(image=led_off_img)
+        ledButton.image = led_off_img
 
 
 def listenerFirebase():
     firebase_admin.db.reference("/temp").listen(listener_temp)
     firebase_admin.db.reference("/humi").listen(listener_humi)
     firebase_admin.db.reference("/led").listen(listener_led)
+
+def update_led():
+    value = db.reference("/led").get()
+    db.reference("/led").set(0 if value == 1 else 1)
+
 
 root = tkinter.Tk()
 root.geometry("1000x500")
@@ -58,13 +63,13 @@ humiValue.set("00.0 %")
 
 tempLabel = tkinter.Label(root, textvariable=tempValue, font=myfont36)
 humiLabel = tkinter.Label(root, textvariable=humiValue, font=myfont36)
-ledLabel = tkinter.Label(root, image=led_off_img, font=myfont36)
+ledButton = tkinter.Button(root, image=led_off_img, font=myfont36, command=lambda: update_led())
 
 root.rowconfigure(0, weight=1)
 root.columnconfigure((0, 1, 2), weight=1)
 tempLabel.grid(row=0, column=0, sticky='EWNS')
 humiLabel.grid(row=0, column=1, sticky='EWNS')
-ledLabel.grid(row=0, column=2, sticky='EWNS')
+ledButton.grid(row=0, column=2, sticky='EWNS')
 
 t1 = threading.Thread(target=listenerFirebase)
 t1.start()
