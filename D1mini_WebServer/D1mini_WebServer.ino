@@ -18,6 +18,10 @@ String led_on_url = "http://www.clker.com/cliparts/1/n/o/R/x/K/greenled-md.png";
 String led_url = led_off_url;
 String next_led_url = "";
 
+float humi = 0.0;
+float temp = 0.0;
+float temp_hic = 0.0;
+
 void connectWifi() {
   WiFi.begin("Gjun207", "Gjun@3474878");
   while(WiFi.status() != WL_CONNECTED) {
@@ -75,15 +79,40 @@ void run_web() {
   client.println("Content-Type: text/html;charset=utf-8"); // headers
   client.println(); // blank (勿忘我)
   client.println("<html>");
+  // 每數秒鐘更新網頁一次
+  client.println("<head><script>");
+  client.println("setTimeout(function(){window.location.reload(1);}, 3000)");
+  client.println("</script></head>");
   client.println("<h1>Hello D1 mini</h1>");
   client.print("<img onclick='window.location.href=\"" + next_led_url + "\";' border=0 src='" + led_url + "' />");
+  client.print("<p>");
+  client.print("<div style='font-size: 100px'>");
+  client.print("濕度: ");
+  client.print(humi);
+  client.print(" %");
+  client.print("</div>");
+  client.print("<div style='font-size: 100px'>");
+  client.print("溫度: ");
+  client.print(temp);
+  client.print(" °C");
+  client.print("</div>");
+  client.print("<div style='font-size: 100px'>");
+  client.print("體感: ");
+  client.print(temp_hic);
+  client.print(" °C");
+  client.print("</div>");
+  
   client.println("</html>");
 }
 
+
+
 void run_dht11() {
   float h = dht.readHumidity();
+  humi = h;
   // 攝式溫度
   float t = dht.readTemperature();
+  temp = t;
   // 華式溫度
   float f = dht.readTemperature(true);
   // 若讀取失敗則重讀
@@ -95,6 +124,7 @@ void run_dht11() {
   float hif = dht.computeHeatIndex(f, h);
   // 攝式體感溫度
   float hic = dht.computeHeatIndex(t, h, false);
+  temp_hic = hic;
   // 印出資料
   Serial.print(F("Humidity: "));
   Serial.print(h);
